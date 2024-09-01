@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { S3Module } from './modules/s3/s3.module';
 import typeormConfig from './config/typeorm.config';
 
 @Module({
@@ -12,7 +13,8 @@ import typeormConfig from './config/typeorm.config';
       imports: [ConfigModule],
       useFactory: typeormConfig,
       inject: [ConfigService]
-    })
+    }),
+    S3Module
   ],
   controllers: [AppController],
   providers: [AppService]

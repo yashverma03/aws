@@ -4,6 +4,14 @@ import { Pagination } from './pagination.util';
 
 const notFoundMessage = 'not_found';
 
+/** Returns a general API response */
+export const generalResponse = (message: string, data?: unknown) => {
+  return {
+    message,
+    data
+  };
+};
+
 /** Returns a API response based on the provided data and optional pagination metadata. */
 export const getResponse = (data: unknown, meta?: Pagination) => {
   if (!data) {
