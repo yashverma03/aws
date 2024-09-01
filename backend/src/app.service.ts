@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { getResponse } from './utils/response.util';
 
 @Injectable()
 export class AppService {
   getHealth() {
-    return {
-      message: 'success',
-      data: {
-        status: 'ok',
-        timestamp: new Date()
-      }
-    };
+    const timestamp = new Date();
+    return getResponse({ timestamp });
   }
 }
