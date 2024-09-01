@@ -1,7 +1,7 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { generalResponse } from 'src/utils/response.util';
+import { generalResponse, getResponse } from 'src/utils/response.util';
 
 @Injectable()
 export class S3Service {
@@ -17,7 +17,7 @@ export class S3Service {
     });
   }
 
-  async uploadFile(file: Express.Multer.File | undefined) {
+  async uploadObject(file: Express.Multer.File | undefined) {
     if (!file) {
       throw new NotFoundException('File not found');
     }
@@ -36,9 +36,22 @@ export class S3Service {
 
     try {
       await this.s3.send(command);
-      return generalResponse('success', { fileUrl });
+      return generalResponse('uploaded', { fileUrl });
     } catch (error) {
       throw new InternalServerErrorException(`Failed to upload file: ${error}`);
+    }
+  }
+
+  async getObjects(bucketName: string) {
+    const command = new ListObjectsV2Command({ Bucket: bucketName });
+
+    try {
+      const { Contents } = await this.s3.send(command);
+      const files: string[] =
+        Contents?.map((item) => `https://${bucketName}.s3.amazonaws.com/${item.Key}`) || [];
+      return getResponse({ files });
+    } catch (error) {
+      throw new InternalServerErrorException(`Failed to get objects: ${error}`);
     }
   }
 }
