@@ -24,8 +24,8 @@ const bootstrap = async () => {
 
   // Swagger
   const config = new DocumentBuilder()
-    .setTitle('AWS API')
-    .setDescription('AWS API docs')
+    .setTitle('Learning API')
+    .setDescription('Learning API docs')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
