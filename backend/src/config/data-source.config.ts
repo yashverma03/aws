@@ -14,8 +14,8 @@ const options: PostgresConnectionOptions = {
   username: configService.getOrThrow('DB_USERNAME'),
   password: configService.getOrThrow('DB_PASSWORD'),
   database: configService.getOrThrow('DB_DATABASE'),
-  entities: [configService.getOrThrow('DB_ENTITIES')],
-  migrations: [configService.getOrThrow('DB_MIGRATIONS')],
+  entities: [configService.getOrThrow('DB_ENTITIES_FOR_CLI')],
+  migrations: [configService.getOrThrow('DB_MIGRATIONS_FOR_CLI')],
   migrationsTableName: 'typeorm_migrations'
 };
 

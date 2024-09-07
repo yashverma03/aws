@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { ConsoleColorEnum } from 'src/enums/console-color.enum';
+import { ConsoleColorEnum } from '../enums/console-color.enum';
 
 const revertCount = process.argv[2] ? parseInt(process.argv[2], 10) : 1;
 

@@ -21,8 +21,8 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "setup": "npm run migration:run && npm run seed:run",
     "migration:run": "npm run typeorm migration:run -- -d src/config/data-source.config.ts",
-    "migration:rerun": "ts-node ./src/common/scripts/rerun-migrations.script.ts",
-    "migration:revert": "ts-node ./src/common/scripts/revert-migrations.script.ts",
+    "migration:rerun": "ts-node ./src/scripts/rerun-migrations.script.ts",
+    "migration:revert": "ts-node ./src/scripts/revert-migrations.script.ts",
     "migration:create": "typeorm migration:create",
     "migration:show": "npm run typeorm migration:show -- -d src/config/data-source.config.ts"
   },
