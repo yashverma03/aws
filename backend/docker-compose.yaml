@@ -1,0 +1,52 @@
+name: learning
+
+services:
+  # PostgreSQL database service
+  db:
+    image: postgres
+    container_name: learning-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - postgresData:/var/lib/postgresql/data # Persist database data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}']
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 3s
+    env_file:
+      - .env
+
+  # NestJS application service
+  server:
+    build:
+      context: .
+    container_name: learning-server
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: staging
+      DB_HOST: learning-db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_ENTITIES: ${DB_ENTITIES}
+      DB_ENTITIES_FOR_CLI: ${DB_ENTITIES_FOR_CLI}
+      DB_MIGRATIONS: ${DB_MIGRATIONS}
+      DB_MIGRATIONS_FOR_CLI: ${DB_MIGRATIONS_FOR_CLI}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+# Named volumes for persistence
+volumes:
+  postgresData:
