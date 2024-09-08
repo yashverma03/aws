@@ -1,0 +1,19 @@
+# Environment variables for the application
+env:
+  # App config
+  PORT: 3000
+  NODE_ENV: local
+
+  # Database config
+  DB_HOST: chart-backend-db
+  DB_USERNAME:
+  DB_PASSWORD:
+  DB_DATABASE: learning-local
+  DB_ENTITIES: dist/entities/*.{ts,js}
+  DB_ENTITIES_FOR_CLI: src/entities/*.{ts,js}
+  DB_MIGRATIONS: dist/migrations/*.{ts,js}
+  DB_MIGRATIONS_FOR_CLI: src/migrations/*.{ts,js}
+
+  # AWS
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
