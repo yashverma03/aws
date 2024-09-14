@@ -20,6 +20,7 @@ env:
   DB_ENTITIES_FOR_CLI: src/entities/*.{ts,js}
   DB_MIGRATIONS: dist/migrations/*.{ts,js}
   DB_MIGRATIONS_FOR_CLI: src/migrations/*.{ts,js}
+  DB_SSL: true
 
   # AWS
   AWS_ACCESS_KEY_ID:
