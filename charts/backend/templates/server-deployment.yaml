@@ -18,27 +18,7 @@ spec:
         ports:
         - containerPort: {{ .Values.http.targetPort }}
         env:
-        - name: PORT
-          value: "{{ .Values.env.PORT }}"
-        - name: NODE_ENV
-          value: "{{ .Values.env.NODE_ENV }}"
-        - name: DB_HOST
-          value: "{{ .Values.env.DB_HOST }}"
-        - name: DB_USERNAME
-          value: "{{ .Values.env.DB_USERNAME }}"
-        - name: DB_PASSWORD
-          value: "{{ .Values.env.DB_PASSWORD }}"
-        - name: DB_DATABASE
-          value: "{{ .Values.env.DB_DATABASE }}"
-        - name: DB_ENTITIES
-          value: "{{ .Values.env.DB_ENTITIES }}"
-        - name: DB_ENTITIES_FOR_CLI
-          value: "{{ .Values.env.DB_ENTITIES_FOR_CLI }}"
-        - name: DB_MIGRATIONS
-          value: "{{ .Values.env.DB_MIGRATIONS }}"
-        - name: DB_MIGRATIONS_FOR_CLI
-          value: "{{ .Values.env.DB_MIGRATIONS_FOR_CLI }}"
-        - name: AWS_ACCESS_KEY_ID
-          value: "{{ .Values.env.AWS_ACCESS_KEY_ID }}"
-        - name: AWS_SECRET_ACCESS_KEY
-          value: "{{ .Values.env.AWS_SECRET_ACCESS_KEY }}"
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
