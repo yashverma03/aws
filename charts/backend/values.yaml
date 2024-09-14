@@ -1,4 +1,11 @@
-# Environment variables for the application
+image:
+  repository: yashverma03/learning-backend
+  tag: latest
+
+http:
+  port: 3000
+  targetPort: 3000
+
 env:
   # App config
   PORT: 3000

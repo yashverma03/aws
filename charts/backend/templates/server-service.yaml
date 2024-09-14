@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}-server
 spec:
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: {{ .Values.http.port }}
+      targetPort: {{ .Values.http.targetPort }}
   selector:
     app: {{ .Release.Name }}-server

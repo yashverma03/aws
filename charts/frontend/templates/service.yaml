@@ -6,6 +6,6 @@ spec:
   selector:
     app: {{ .Release.Name }}-frontend
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
+    - protocol: {{ .Values.http.protocol }}
+      port: {{ .Values.http.port }}
+      targetPort: {{ .Values.http.targetPort }}

@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: yashverma03/learning-frontend
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: 5000
+        - containerPort: {{ .Values.http.targetPort }}
         env:
         - name: VITE_PORT
           value: "{{ .Values.env.VITE_PORT }}"

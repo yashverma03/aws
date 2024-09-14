@@ -1,5 +1,12 @@
-# Environment variables for the application
+image:
+  repository: yashverma03/learning-frontend
+  tag: latest
+
+http:
+  port: 80
+  targetPort: 80
+  protocol: TCP
+
 env:
-  # App config
   VITE_PORT: 5000
   VITE_API_URL: http://localhost:3000/api/v1
