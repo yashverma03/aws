@@ -1,52 +1,57 @@
 name: learning
 
 services:
-  # PostgreSQL database service
   db:
-    image: postgres
     container_name: learning-db
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresData:/var/lib/postgresql/data
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
+
+  redis:
+    container_name: learning-redis
+    image: redis
+    ports:
+      - 6379:6379
     volumes:
-      - postgresData:/var/lib/postgresql/data # Persist database data
-    ports:
-      - 5432:5432
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}']
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 3s
-    env_file:
-      - .env
+      - redisData:/data
+    command: redis-server --appendonly yes
 
-  # NestJS application service
-  server:
-    build:
-      context: .
-    container_name: learning-server
-    environment:
-      PORT: ${PORT}
-      NODE_ENV: staging
-      DB_HOST: learning-db
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_ENTITIES: ${DB_ENTITIES}
-      DB_ENTITIES_FOR_CLI: ${DB_ENTITIES_FOR_CLI}
-      DB_MIGRATIONS: ${DB_MIGRATIONS}
-      DB_MIGRATIONS_FOR_CLI: ${DB_MIGRATIONS_FOR_CLI}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  kafka:
+    container_name: learning-kafka
+    image: bitnami/kafka
     ports:
-      - 3000:3000
+      - 9092:9092
+    volumes:
+      - kafkaData:/bitnami/kafka
     depends_on:
-      - db
-    env_file:
-      - .env
+      - zookeeper
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENER_NAME_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://learning-kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-# Named volumes for persistence
+  zookeeper:
+    container_name: learning-zookeeper
+    image: bitnami/zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_SERVER_ID: 1
+      ZOO_PEER_PORT: 2888
+      ZOO_LEADER_PORT: 3888
+      ALLOW_ANONYMOUS_LOGIN: yes
+
 volumes:
   postgresData:
+  kafkaData:
+  redisData:
