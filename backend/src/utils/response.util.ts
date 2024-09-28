@@ -1,23 +1,24 @@
 import { NotFoundException } from '@nestjs/common';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Pagination } from './pagination.util';
+import { UpdateResponse } from '../interfaces/update-response.interface';
 
 const notFoundMessage = 'not_found';
+const updateMessage = 'updated';
 
 /** Returns a general API response */
-export const generalResponse = (message: string, data?: unknown) => {
+export const generalResponse = (message: string, data?: object) => {
   return {
     message,
     data
   };
 };
 
-/** Returns a API response based on the provided data and optional pagination metadata. */
+/** Returns an API response based on the provided data and optional pagination metadata. */
 export const getResponse = (data: unknown, meta?: Pagination) => {
   if (!data) {
     throw new NotFoundException(notFoundMessage);
   }
-
   return {
     message: 'success',
     data,
@@ -25,9 +26,9 @@ export const getResponse = (data: unknown, meta?: Pagination) => {
   };
 };
 
-/** Returns a API response based on the results of insert operations. */
+/** Returns an API response based on the results of insert operations. */
 export const insertResponse = (...results: InsertResult[]) => {
-  const data: Record<string, any> = {};
+  const data: Record<string, unknown> = {};
   results.forEach((result) => {
     const identifier = result.identifiers[0];
     for (const [key, value] of Object.entries(identifier)) {
@@ -42,18 +43,52 @@ export const insertResponse = (...results: InsertResult[]) => {
 
 /** Handle API responses based on the result of update or delete operations. */
 const handleResponse = (result: UpdateResult | DeleteResult, successMessage: string) => {
-  if (result?.affected && result.affected > 0) {
-    return { message: successMessage };
+  const { affected } = result;
+  if (affected === 0) {
+    throw new NotFoundException(notFoundMessage);
   }
-  throw new NotFoundException(notFoundMessage);
+  return {
+    message: successMessage,
+    meta: {
+      affected
+    }
+  };
 };
 
-/** Returns a API response based on the number of rows updated. */
+/** Returns an API response based on the number of rows updated. */
 export const updateResponse = (updateResult: UpdateResult) => {
-  return handleResponse(updateResult, 'updated');
+  return handleResponse(updateResult, updateMessage);
 };
 
-/** Returns a API response based on the number of rows deleted. */
+/**
+ * Returns an API response based on the number of rows updated in each result.
+ * Useful when updating data in multiple tables.
+ */
+export const multiUpdateResponse = (result: UpdateResponse) => {
+  const response: Record<string, unknown> = {};
+  let totalAffected = 0;
+
+  for (const key in result) {
+    const { affected } = result[key];
+    response[key] = affected;
+    if (affected) {
+      totalAffected += affected;
+    }
+  }
+
+  if (totalAffected === 0) {
+    throw new NotFoundException(notFoundMessage);
+  }
+  return {
+    message: updateMessage,
+    meta: {
+      affected: response,
+      totalAffected
+    }
+  };
+};
+
+/** Returns an API response based on the number of rows deleted. */
 export const deleteResponse = (deleteResult: DeleteResult) => {
   return handleResponse(deleteResult, 'deleted');
 };

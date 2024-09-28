@@ -8,12 +8,12 @@
 export const groupData = (
   ungroupedData: Record<string, any>[],
   keysToGroup: string[],
-  keyForRemainingValues: string,
+  keyForRemainingValues: string
 ) => {
   return ungroupedData.map((item) => {
     // Initially, copy all values under 'keyForRemainingValues '
     const groupedData = {
-      [keyForRemainingValues]: item,
+      [keyForRemainingValues]: item
     };
 
     keysToGroup.forEach((prop) => {
@@ -43,4 +43,28 @@ export const getOrderBy = (orderBy: string[], separator = '_') => {
   });
 
   return transformedOrderBy;
+};
+
+/**
+ * Groups data from an array of objects into nested objects based on table and column names.
+ * Useful in TypeORM getRawOne() and getRawMany() with join queries where data is returned in a flat structure.
+ */
+export const groupDataByTable = (data: Record<string, any>[]) => {
+  const groupedData: Record<string, Record<string, unknown>>[] = [];
+
+  for (const item of data) {
+    const groupedItem: Record<string, Record<string, unknown>> = {};
+
+    for (const key in item) {
+      const [tableName, columnName] = key.split('_');
+      if (!groupedItem[tableName]) {
+        groupedItem[tableName] = {};
+      }
+      groupedItem[tableName][columnName] = item[key];
+    }
+
+    groupedData.push(groupedItem);
+  }
+
+  return groupedData;
 };
