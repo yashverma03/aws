@@ -26,7 +26,7 @@ export class RedisService {
     } else {
       await this.redis.set(key, value);
     }
-    return generalResponse('created', { key, value, ttl });
+    return generalResponse('created', dto);
   }
 
   /**

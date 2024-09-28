@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { dropTable } from '../utils/migration.util';
-import { LogTypeEnum } from '../interfaces/log-type.enum';
+import { LogTypeEnum } from '../enums/log-type.enum';
 
 export class AddLogTable1725686518149 implements MigrationInterface {
   tableName = 'logs';

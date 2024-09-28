@@ -1,5 +1,5 @@
 import { IsEnum, IsNumberString, IsOptional } from 'class-validator';
-import { LogTypeEnum } from '../../../interfaces/log-type.enum';
+import { LogTypeEnum } from '../../../enums/log-type.enum';
 import { PaginationDto } from '../../../dto/pagination.dto';
 
 export class GetLogsDto extends PaginationDto {

@@ -1,5 +1,5 @@
 import { IsEnum, IsString, Length } from 'class-validator';
-import { LogTypeEnum } from '../../../interfaces/log-type.enum';
+import { LogTypeEnum } from '../../../enums/log-type.enum';
 
 export class CreateLogDto {
   /**

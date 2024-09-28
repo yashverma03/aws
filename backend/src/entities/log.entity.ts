@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { LogTypeEnum } from '../interfaces/log-type.enum';
+import { LogTypeEnum } from '../enums/log-type.enum';
 
 @Entity('logs')
 export class Log {
