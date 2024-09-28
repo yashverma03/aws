@@ -12,7 +12,8 @@ const typeormConfig = (configService: ConfigService): PostgresConnectionOptions 
     entities: [configService.getOrThrow('DB_ENTITIES')],
     migrations: [configService.getOrThrow('DB_MIGRATIONS')],
     migrationsTableName: 'typeorm_migrations',
-    ssl: configService.getOrThrow('DB_SSL') === 'false' ? false : { rejectUnauthorized: false }
+    ssl: configService.getOrThrow('DB_SSL') === 'false' ? false : { rejectUnauthorized: false },
+    logging: true
   };
 };
 

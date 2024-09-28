@@ -17,7 +17,8 @@ const options: PostgresConnectionOptions = {
   entities: [configService.getOrThrow('DB_ENTITIES_FOR_CLI')],
   migrations: [configService.getOrThrow('DB_MIGRATIONS_FOR_CLI')],
   migrationsTableName: 'typeorm_migrations',
-  ssl: configService.getOrThrow('DB_SSL') === 'false' ? false : { rejectUnauthorized: false }
+  ssl: configService.getOrThrow('DB_SSL') === 'false' ? false : { rejectUnauthorized: false },
+  logging: true
 };
 
 export default new DataSource(options);

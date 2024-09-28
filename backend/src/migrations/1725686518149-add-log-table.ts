@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { dropTable } from '../utils/migration.util';
+import { LogTypeEnum } from '../interfaces/log-type.enum';
 
 export class AddLogTable1725686518149 implements MigrationInterface {
   tableName = 'logs';
@@ -9,15 +10,16 @@ export class AddLogTable1725686518149 implements MigrationInterface {
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         "logId" BIGSERIAL PRIMARY KEY,
         "message" TEXT NOT NULL,
+        "type" VARCHAR(255) NOT NULL,
         "timestampAdded" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
     await queryRunner.query(`
-      INSERT INTO ${this.tableName} (message)
+      INSERT INTO ${this.tableName} (message, type)
       VALUES
-      ('Test log entry 1'),
-      ('Test log entry 2');
+      ('Test log entry 1', '${LogTypeEnum.General}'),
+      ('Test log entry 2', '${LogTypeEnum.General}');
     `);
   }
 

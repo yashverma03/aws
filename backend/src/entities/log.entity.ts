@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { LogTypeEnum } from '../interfaces/log-type.enum';
 
 @Entity('logs')
 export class Log {
@@ -7,6 +8,9 @@ export class Log {
 
   @Column()
   message: string;
+
+  @Column()
+  type: LogTypeEnum;
 
   @Column()
   timestampAdded: Date;
