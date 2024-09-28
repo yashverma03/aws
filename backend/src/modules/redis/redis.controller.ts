@@ -3,7 +3,7 @@ import { RedisService } from './redis.service';
 import { ApiTags } from '@nestjs/swagger';
 import { SetRedisKeyDto } from './dto/set-redis-key.dto';
 
-@ApiTags('redis')
+@ApiTags('Redis')
 @Controller('redis')
 export class RedisController {
   constructor(private readonly redisService: RedisService) {}
