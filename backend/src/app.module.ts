@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { S3Module } from './modules/s3/s3.module';
 import { LogModule } from './modules/log/log.module';
+import { RedisModule } from './modules/redis/redis.module';
 import typeormConfig from './config/typeorm.config';
 
 @Module({
@@ -16,7 +17,8 @@ import typeormConfig from './config/typeorm.config';
       inject: [ConfigService]
     }),
     S3Module,
-    LogModule
+    LogModule,
+    RedisModule
   ],
   controllers: [AppController],
   providers: [AppService]

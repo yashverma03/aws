@@ -7,7 +7,7 @@ const notFoundMessage = 'not_found';
 const updateMessage = 'updated';
 
 /** Returns a general API response */
-export const generalResponse = (message: string, data?: object) => {
+export const generalResponse = (message: string, data?: unknown) => {
   return {
     message,
     data
