@@ -18,6 +18,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private kafka: Kafka;
   private producer: Producer;
   private consumer: Consumer;
+  private isEnabled: string;
 
   constructor(
     private readonly configService: ConfigService,
@@ -31,9 +32,15 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     this.consumer = this.kafka.consumer({
       groupId: this.configService.getOrThrow<string>('KAFKA_GROUP_ID')
     });
+    this.isEnabled = this.configService.getOrThrow<string>('KAFKA_ENABLED');
   }
 
   async onModuleInit() {
+    if (this.isEnabled !== 'true') {
+      Logger.log('Kafka is disabled, skipping initialization');
+      return;
+    }
+
     await Promise.all([this.producer.connect(), this.consumer.connect()]);
 
     // Subscribe to topics
@@ -64,6 +71,9 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
+    if (this.isEnabled !== 'true') {
+      return;
+    }
     await this.producer.disconnect();
     await this.consumer.disconnect();
   }
