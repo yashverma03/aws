@@ -11,7 +11,7 @@ export class KafkaSendMessageDto {
 
   /**
    * The message to be sent to the specified Kafka topic.
-   * @example 'Hello, Kafka!'
+   * @example 'Notification to user'
    */
   @IsString()
   @IsNotEmpty()

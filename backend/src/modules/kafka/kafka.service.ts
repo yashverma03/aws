@@ -1,4 +1,10 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Kafka, Producer, Consumer } from 'kafkajs';
 import { generalResponse } from '../../utils/response.util';
@@ -20,7 +26,6 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     this.kafka = new Kafka({
       clientId: this.configService.getOrThrow<string>('KAFKA_CLIENT_ID'),
       brokers: [this.configService.getOrThrow<string>('KAFKA_BROKER')]
-      // brokers: ['localhost:9092']
     });
     this.producer = this.kafka.producer();
     this.consumer = this.kafka.consumer({
@@ -29,19 +34,31 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit() {
-    await this.producer.connect();
-    await this.consumer.connect();
+    await Promise.all([this.producer.connect(), this.consumer.connect()]);
 
     // Subscribe to topics
-    await this.consumer.subscribe({ topic: KafkaTopicEnum.General, fromBeginning: true });
-    await this.consumer.subscribe({ topic: KafkaTopicEnum.Specific, fromBeginning: true });
+    await Promise.all([
+      this.consumer.subscribe({ topic: KafkaTopicEnum.General, fromBeginning: true }),
+      this.consumer.subscribe({ topic: KafkaTopicEnum.Specific, fromBeginning: true })
+    ]);
 
-    // // Run the consumer
+    // Run the consumer
     await this.consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const data = `Received message: topic = ${topic}, partition = ${partition} message = ${JSON.stringify(message)}`;
+      eachMessage: async ({ topic, message }) => {
+        const value = message?.value?.toString();
+        const data = `Received message: topic = ${topic}, value = ${JSON.stringify(value)}`;
         Logger.log(data);
-        await this.logService.createLog({ message: data, type: LogTypeEnum.Kafka });
+
+        switch (topic) {
+          case KafkaTopicEnum.General:
+            await this.logService.createLog({ message: data, type: LogTypeEnum.Kafka });
+            break;
+          case KafkaTopicEnum.Specific:
+            await this.logService.createLog({ message: data, type: LogTypeEnum.Kafka });
+            break;
+          default:
+            throw new InternalServerErrorException(`Unknown topic: ${topic}`);
+        }
       }
     });
   }
@@ -60,6 +77,6 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       topic,
       messages: [{ value: message }]
     });
-    return generalResponse('success', { dto });
+    return generalResponse('created', dto);
   }
 }
