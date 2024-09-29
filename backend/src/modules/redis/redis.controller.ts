@@ -13,15 +13,15 @@ export class RedisController {
    */
   @Delete(':key')
   async deleteKey(@Param('key') key: string) {
-    return this.redisService.deleteKey(key);
+    return await this.redisService.deleteKey(key);
   }
 
   /**
    * Get all keys and values in Redis.
    */
-  @Get('keys')
-  async getAllKeys() {
-    return this.redisService.getAllKeys();
+  @Get()
+  async getAll() {
+    return await this.redisService.getAll();
   }
 
   /**
@@ -29,7 +29,7 @@ export class RedisController {
    */
   @Get(':key')
   async getKey(@Param('key') key: string) {
-    return this.redisService.getKey(key);
+    return await this.redisService.getKey(key);
   }
 
   /**
@@ -37,6 +37,6 @@ export class RedisController {
    */
   @Post()
   async setKey(@Body() dto: SetRedisKeyDto) {
-    return this.redisService.setKey(dto);
+    return await this.redisService.setKey(dto);
   }
 }

@@ -42,15 +42,18 @@ export class RedisService {
    * Delete a key from Redis.
    */
   async deleteKey(key: string) {
-    const result = await this.redis.del(key);
-    return generalResponse('deleted', result);
+    const affected = await this.redis.del(key);
+    return generalResponse('deleted', { affected });
   }
 
   /**
    * Get all keys and values in Redis.
    */
-  async getAllKeys() {
+  async getAll() {
     const keys = await this.redis.keys('*');
+    if (keys.length === 0) {
+      return getResponse([]);
+    }
     const values = await this.redis.mget(keys);
     const result = keys.map((key, index) => ({ key, value: values[index] }));
     return getResponse(result);
