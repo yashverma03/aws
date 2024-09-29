@@ -1,8 +1,26 @@
 name: learning
 
 services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - kafka
+      - zookeeper
+
   db:
-    container_name: learning-db
+    container_name: db
     image: postgres
     ports:
       - 5432:5432
@@ -15,8 +33,16 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
 
+  adminer:
+    container_name: adminer
+    image: adminer
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
   redis:
-    container_name: learning-redis
+    container_name: redis
     image: redis
     ports:
       - 6379:6379
@@ -25,7 +51,7 @@ services:
     command: redis-server --appendonly yes
 
   kafka:
-    container_name: learning-kafka
+    container_name: kafka
     image: bitnami/kafka
     ports:
       - 9092:9092
@@ -37,11 +63,11 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_LISTENER_NAME_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://learning-kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
   zookeeper:
-    container_name: learning-zookeeper
+    container_name: zookeeper
     image: bitnami/zookeeper
     ports:
       - 2181:2181
