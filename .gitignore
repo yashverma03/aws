@@ -3,3 +3,10 @@ dist
 .vscode
 *.env*
 !.env.example
+
+*.tmp
+tmp
+logs
+log
+*.log
+build
