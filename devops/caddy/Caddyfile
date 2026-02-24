@@ -1,0 +1,7 @@
+{
+    auto_https off
+}
+
+localhost:8443
+
+respond "Hello, world!"
